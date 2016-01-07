@@ -1,25 +1,30 @@
 {
-  "name": "validation",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node validate.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "monet": "^0.8.6"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.4.0",
-    "babel-core": "^6.4.0",
-    "babel-preset-es2015-node5": "^1.1.1",
-    "babel-preset-stage-1": "^6.3.13",
-    "chai": "^3.4.1",
-    "chai-as-promised": "^5.2.0",
-    "mocha": "^2.3.4"
-  }
+    "name": "validation",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "private": true,
+    "scripts": {
+        "test": "mocha -R spec --compilers js:babel-register *-test.js",
+        "start": "babel-node validate.js"
+    },
+    "engines": {
+        "node": ">=5.1.0",
+        "npm": ">= 3.3.0"
+    },
+    "keywords": [],
+    "author": "Crisson Jno-Charles",
+    "license": "MIT",
+    "dependencies": {
+        "monet": "^0.8.6"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.4.0",
+        "babel-core": "^6.4.0",
+        "babel-preset-es2015-node5": "^1.1.1",
+        "babel-preset-stage-1": "^6.3.13",
+        "chai": "^3.4.1",
+        "chai-as-promised": "^5.2.0",
+        "mocha": "^2.3.4"
+    }
 }

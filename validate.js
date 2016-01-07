@@ -1,6 +1,6 @@
 import {Maybe, Validation} from 'monet'
 
-class ValidationError {
+export class ValidationError {
   constructor(key, value){
     this[key] = value
   }
@@ -61,7 +61,7 @@ const validateInviteAndEmail = (invite, email) => {
 
     // Let's say both invite & email must be provided, and you need to check both
     let out = maybeInvite.flatMap(inv => {
-        return maybeEmail.flatMap(em => {
+        return maybeEmail.map(em => {
             return {invite: inv, email: em}
         })
     }) 
@@ -70,29 +70,28 @@ const validateInviteAndEmail = (invite, email) => {
     // will produce a Fail[ValidationError], where Fail is a subtype of Validation.
     // If the prior operation instead returns an instance of Maybe.Some, Maybe.toValidation
     // will produce Success[Object]
-    .toValidation(ValidationError.of("registration", 
+    return out.toValidation(ValidationError.of("registration", 
         "both invite and email are required"))
 
-    // The function passed to flatMap will only be invoked if toValidation produced
-    // a Success[Object].  Failures are short-circuited.  It gives you the opportunity
-    // to modify the Validation.  I typically use it to complete more fine-tuned
-    // checks on data that to this point looks valid.
-    .flatMap(({invite, email}) => {
-        // complete additional checks
-        let maxChar = 320
-        if (invite.length > maxChar) {
-            return Validation.fail(ValidationError.of("invite", 
-                `invite must be lesse than ${maxChar}`))
-        }
+        // The function passed to flatMap will only be invoked if toValidation produced
+        // a Success[Object].  Failures are short-circuited.  It gives you the opportunity
+        // to modify the Validation.  I typically use it to complete more fine-tuned
+        // checks on data that to this point looks valid.
+        .flatMap(({invite, email}) => {
+            // complete additional checks
+            let maxChar = 320
+            if (invite.length > maxChar) {
+                return Validation.fail(ValidationError.of("invite", 
+                    `invite must be less than ${maxChar}`))
+            }
 
-        if (email.indexOf('@') === -1) {
-            return ValidationError.of("email", "a valid email is required")
-        }
+            if (email.indexOf('@') === -1) {
+                return Validation.fail(ValidationError.of("email", 
+                    "a valid email is required"))
+            }
 
-        return Validation.success({invite, email})
-    })
-
-    return out
+            return Validation.success({invite, email})
+        })
 }
 
 /**
@@ -109,7 +108,7 @@ const validatePassword = (pwd0, pwd1) => {
             return Maybe.fromNull(pwd1).map(trim).filter(istruthy)
                 .filter(p1 => p1 === p0)
         })
-        .toValidation(ValidationError.of('password', 'password must match'))
+        .toValidation(ValidationError.of('password', 'passwords must match'))
         .flatMap(pwd => {
             let minChar = 8
             if (pwd.length < minChar ) {
